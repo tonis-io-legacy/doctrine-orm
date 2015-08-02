@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Tools\Setup;
 use League\Container\ServiceProvider;
 
-class Doctrine extends ServiceProvider
+class DoctrineProvider extends ServiceProvider
 {
     const DRIVER_ANNOTATION = 'annotation';
     const DRIVER_XML        = 'xml';
@@ -17,10 +17,6 @@ class Doctrine extends ServiceProvider
 
     /** @var array */
     protected $config;
-    /** @var array */
-    protected $provides = [
-        EntityManager::class
-    ];
 
     /**
      * @param array $config
@@ -28,13 +24,16 @@ class Doctrine extends ServiceProvider
     public function __construct(array $config)
     {
         $defaults = [
-            'debug'     => true,
-            'proxy_dir' => null,
-            'paths'     => [],
-            'driver'    => self::DRIVER_ANNOTATION,
-            'params'   => [],
+            'alias'      => Entitymanager::class,
+            'debug'      => true,
+            'proxy_dir'  => null,
+            'paths'      => [],
+            'driver'     => self::DRIVER_ANNOTATION,
+            'connection' => ['driver' => 'pdo_mysql'],
         ];
-        $this->config = array_merge($defaults, $config);
+
+        $this->config     = array_merge($defaults, $config);
+        $this->provides[] = $this->config['alias'];
     }
 
     /**
@@ -50,7 +49,7 @@ class Doctrine extends ServiceProvider
 
             $config->setMetadataDriverImpl($driver);
 
-            return EntityManager::create($this->config['params'], $config);
+            return EntityManager::create($this->config['connection'], $config);
         });
     }
 
@@ -79,7 +78,7 @@ class Doctrine extends ServiceProvider
                 $driver = new YamlDriver($this->config['paths']);
                 break;
             default:
-                throw new Exception\InvalidDriverException('Valid driver types are: annotation, yaml, xml');
+                throw new Exception\InvalidDriver('Valid driver types are: annotation, yaml, xml');
         }
 
         $chain = new MappingDriverChain();
