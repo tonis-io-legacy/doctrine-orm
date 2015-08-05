@@ -24,7 +24,7 @@ class DoctrineProvider extends ServiceProvider
     public function __construct(array $config)
     {
         $defaults = [
-            'alias'      => Entitymanager::class,
+            'alias'      => EntityManager::class,
             'debug'      => true,
             'proxy_dir'  => null,
             'paths'      => [],
