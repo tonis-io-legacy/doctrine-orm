@@ -2,10 +2,12 @@
 namespace Tonis\DoctrineORM;
 
 use Psr\Http\Message\ResponseInterface;
+use Tonis\App;
 use Tonis\Container;
 use Tonis\Http\Request;
+use Tonis\PackageInterface;
 
-class Package
+class Package implements PackageInterface
 {
     /** @var array */
     private $config;
@@ -37,5 +39,14 @@ class Package
         $container->addServiceProvider(new DoctrineProvider($this->config));
 
         return $next($request, $response);
+    }
+
+    /**
+     * @param App $app
+     * @return void
+     */
+    public function register(App $app)
+    {
+        $app->add($this);
     }
 }
