@@ -27,9 +27,14 @@ class DoctrineProvider extends ServiceProvider
             'alias'      => Entitymanager::class,
             'debug'      => true,
             'proxy_dir'  => null,
-            'paths'      => [],
-            'driver'     => self::DRIVER_ANNOTATION,
-            'connection' => ['driver' => 'pdo_mysql'],
+            'driver'     => [
+                'type'   => self::DRIVER_ANNOTATION,
+                'simple' => true,
+                'paths'  => [],
+            ],
+            'connection' => [
+                'driver' => 'pdo_mysql'
+            ],
         ];
 
         $this->config     = array_merge($defaults, $config);
@@ -67,15 +72,17 @@ class DoctrineProvider extends ServiceProvider
 
     private function createDriverChain(Configuration $config)
     {
-        switch ($this->config['driver']) {
+        $paths = $this->config['driver']['paths'];
+
+        switch ($this->config['driver']['type']) {
             case self::DRIVER_ANNOTATION:
-                $driver = $config->newDefaultAnnotationDriver($this->config['paths'], true);
+                $driver = $config->newDefaultAnnotationDriver($paths, $this->config['driver']['simple']);
                 break;
             case self::DRIVER_XML:
-                $driver = new XmlDriver($this->config['paths']);
+                $driver = new XmlDriver($paths);
                 break;
             case self::DRIVER_YAML:
-                $driver = new YamlDriver($this->config['paths']);
+                $driver = new YamlDriver($paths);
                 break;
             default:
                 throw new Exception\InvalidDriver('Valid driver types are: annotation, yaml, xml');
