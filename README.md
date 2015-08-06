@@ -17,8 +17,8 @@ Usage
 -----
 
 ```php
-$app = new \Tonis\App;
-$app->add(new \Tonis\DoctrineORM\Package($config));
+$app = new Tonis\App;
+$app->package(new Tonis\DoctrineORM\Package($config));
 ```
 
 Configuration
