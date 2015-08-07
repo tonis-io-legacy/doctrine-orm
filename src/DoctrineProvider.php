@@ -37,7 +37,7 @@ class DoctrineProvider extends ServiceProvider
             ],
         ];
 
-        $this->config     = array_merge($defaults, $config);
+        $this->config     = array_replace_recursive($defaults, $config);
         $this->provides[] = $this->config['alias'];
     }
 

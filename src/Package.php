@@ -1,10 +1,8 @@
 <?php
 namespace Tonis\DoctrineORM;
 
-use Psr\Http\Message\ResponseInterface;
 use Tonis\App;
 use Tonis\Container;
-use Tonis\Http\Request;
 use Tonis\PackageInterface;
 
 class Package implements PackageInterface
@@ -21,14 +19,12 @@ class Package implements PackageInterface
     }
 
     /**
-     * @param Request           $request
-     * @param ResponseInterface $response
-     * @param callable          $next
-     * @return ResponseInterface
+     * @param App $app
+     * @return void
      */
-    public function __invoke(Request $request, ResponseInterface $response, callable $next)
+    public function register(App $app)
     {
-        $container = $request->app()->getContainer();
+        $container = $app->getContainer();
 
         if (!$container instanceof Container) {
             throw new Exception\InvalidContainer(
@@ -37,16 +33,5 @@ class Package implements PackageInterface
         }
 
         $container->addServiceProvider(new DoctrineProvider($this->config));
-
-        return $next($request, $response);
-    }
-
-    /**
-     * @param App $app
-     * @return void
-     */
-    public function register(App $app)
-    {
-        $app->add($this);
     }
 }
