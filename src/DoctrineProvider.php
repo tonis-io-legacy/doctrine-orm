@@ -21,7 +21,7 @@ class DoctrineProvider extends ServiceProvider
     /**
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         $defaults = [
             'alias'      => EntityManager::class,

@@ -13,7 +13,7 @@ class Package implements PackageInterface
     /**
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
@@ -26,12 +26,8 @@ class Package implements PackageInterface
     {
         $container = $app->getContainer();
 
-        if (!$container instanceof Container) {
-            throw new Exception\InvalidContainer(
-                'This package only works with the default Container'
-            );
+        if (method_exists($container, 'addServiceProvider')) {
+            $container->addServiceProvider(new DoctrineProvider($this->config));
         }
-
-        $container->addServiceProvider(new DoctrineProvider($this->config));
     }
 }
