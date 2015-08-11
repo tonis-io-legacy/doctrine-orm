@@ -48,7 +48,7 @@ class DoctrineProvider extends ServiceProvider
     {
         $container = $this->getContainer();
 
-        $container->singleton(EntityManager::class, function () {
+        $container->singleton($this->config['alias'], function () {
             $config = $this->createConfiguration();
             $driver = $this->createDriverChain($config);
 
@@ -58,6 +58,11 @@ class DoctrineProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Creates the ORM configuration.
+     *
+     * @return Configuration
+     */
     private function createConfiguration()
     {
         $cache     = isset($this->config['cache']) ? $this->config['cache'] : null;
@@ -70,6 +75,13 @@ class DoctrineProvider extends ServiceProvider
         return Setup::createConfiguration($this->config['debug'], $this->config['proxy_dir'], $cache);
     }
 
+    /**
+     * Creates the driver chain based on the default driver type. The chain can be retrieved
+     * later and added to (for example, in other Tonis packages).
+     *
+     * @param Configuration $config
+     * @return MappingDriverChain
+     */
     private function createDriverChain(Configuration $config)
     {
         $paths = $this->config['driver']['paths'];

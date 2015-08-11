@@ -6,23 +6,42 @@
 
 Tonis\DoctrineORM is a package to configure a simple Doctrine ORM EntityManager.
 
-Composer
---------
+## Composer
 
 ```
 composer require tonis-io/doctrine-orm
 ```
 
-Usage
------
+## Usage
 
 ```php
 $app = new Tonis\App;
 $app->package(new Tonis\DoctrineORM\Package($config));
 ```
 
-Configuration
--------------
+## Configuration
 
-`Tonis\DoctrineORM` has the following config options available:
+`Tonis\DoctrineORM\Package` accepts an array of of configuration. The following is an example
+with default values.
 
+```php
+$package = new Tonis\DoctrineORM\Package([
+    'alias'     => EntityManager::class,
+    'debug'     => true,
+    'proxy_dir' => null,
+    
+    'driver' => [
+        'type'   => self::DRIVER_ANNOTATION,
+        'simple' => true,
+        'paths'  => [],
+    ],
+    
+    'connection' => [
+        'driver'   => 'pdo_mysql',
+        'host'     => '127.0.0.1',
+        'port'     => '3306',
+        'user'     => '',
+        'password' => '',
+    ],
+]);
+```

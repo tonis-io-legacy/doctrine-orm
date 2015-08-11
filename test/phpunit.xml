@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit colors="true">
+<phpunit colors="true" bootstrap="../vendor/autoload.php">
     <filter>
         <blacklist>
             <directory suffix=".php">.</directory>
@@ -10,7 +10,7 @@
         </whitelist>
     </filter>
     <testsuites>
-        <testsuite name="Tonis\ResponseTime">
+        <testsuite name="Tonis\DoctrineORM">
             <directory>.</directory>
         </testsuite>
     </testsuites>
