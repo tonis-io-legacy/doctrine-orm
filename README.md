@@ -1,6 +1,6 @@
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tonis-io/response-time/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tonis-io/response-time/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/tonis-io/response-time/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tonis-io/response-time/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/tonis-io/response-time/badges/build.png?b=master)](https://scrutinizer-ci.com/g/tonis-io/response-time/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tonis-io/doctrine-orm/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tonis-io/doctrine-orm/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/tonis-io/doctrine-orm/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tonis-io/doctrine-orm/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/tonis-io/doctrine-orm/badges/build.png?b=master)](https://scrutinizer-ci.com/g/tonis-io/doctrine-orm/build-status/master)
 
 # Tonis\DoctrineORM
 
