@@ -7,24 +7,21 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Tools\Setup;
-use League\Container\ServiceProvider;
+use Interop\Container\ContainerInterface;
 
-class DoctrineProvider extends ServiceProvider
+final class EntityManagerFactory
 {
     const DRIVER_ANNOTATION = 'annotation';
     const DRIVER_XML        = 'xml';
     const DRIVER_YAML       = 'yaml';
 
-    /** @var array */
-    protected $config;
-
     /**
      * @param array $config
+     * @return EntityManager
      */
-    public function __construct(array $config = [])
+    public static function create(array $config = [], ContainerInterface $container = null)
     {
         $defaults = [
-            'alias'      => EntityManager::class,
             'debug'      => true,
             'proxy_dir'  => null,
             'driver'     => [
@@ -37,58 +34,53 @@ class DoctrineProvider extends ServiceProvider
             ],
         ];
 
-        $this->config     = array_replace_recursive($defaults, $config);
-        $this->provides[] = $this->config['alias'];
-    }
+        $config    = array_replace_recursive($defaults, $config);
+        $ormConfig = self::createConfiguration($config, $container);
+        $driver    = self::createDriverChain($ormConfig, $config);
 
-    /**
-     * {@inheritDoc}
-     */
-    public function register()
-    {
-        $container = $this->getContainer();
+        $ormConfig->setMetadataDriverImpl($driver);
 
-        $container->singleton($this->config['alias'], function () {
-            $config = $this->createConfiguration();
-            $driver = $this->createDriverChain($config);
-
-            $config->setMetadataDriverImpl($driver);
-
-            return EntityManager::create($this->config['connection'], $config);
-        });
+        return EntityManager::create($config['connection'], $ormConfig);
     }
 
     /**
      * Creates the ORM configuration.
      *
+     * @param array              $config
+     * @param ContainerInterface $container
      * @return Configuration
      */
-    private function createConfiguration()
+    private static function createConfiguration(array $config, ContainerInterface $container = null)
     {
-        $cache     = isset($this->config['cache']) ? $this->config['cache'] : null;
-        $container = $this->getContainer();
+        $cache = isset($config['cache']) ? $config['cache'] : null;
 
-        if (is_string($cache) && isset($container[$cache])) {
-            $cache = $container->get($cache);
+        if ($container && is_string($config['cache']) && $container->has($config['cache'])) {
+            $cache = $container->get($config['cache']);
         }
 
-        return Setup::createConfiguration($this->config['debug'], $this->config['proxy_dir'], $cache);
+        return Setup::createConfiguration($config['debug'], $config['proxy_dir'], $cache);
     }
 
     /**
      * Creates the driver chain based on the default driver type. The chain can be retrieved
      * later and added to (for example, in other Tonis packages).
      *
-     * @param Configuration $config
+     * @param Configuration       $ormConfig
+     * @param array|Configuration $config
      * @return MappingDriverChain
      */
-    private function createDriverChain(Configuration $config)
+    private static function createDriverChain(Configuration $ormConfig, array $config)
     {
-        $paths = $this->config['driver']['paths'];
+        $chain = new MappingDriverChain();
+        $paths = $config['driver']['paths'];
 
-        switch ($this->config['driver']['type']) {
+        if (empty($paths)) {
+            return $chain;
+        }
+
+        switch ($config['driver']['type']) {
             case self::DRIVER_ANNOTATION:
-                $driver = $config->newDefaultAnnotationDriver($paths, $this->config['driver']['simple']);
+                $driver = $ormConfig->newDefaultAnnotationDriver($paths, $config['driver']['simple']);
                 break;
             case self::DRIVER_XML:
                 $driver = new XmlDriver($paths);
@@ -100,9 +92,14 @@ class DoctrineProvider extends ServiceProvider
                 throw new Exception\InvalidDriver('Valid driver types are: annotation, yaml, xml');
         }
 
-        $chain = new MappingDriverChain();
         $chain->setDefaultDriver($driver);
-
         return $chain;
+    }
+
+    /**
+     * Disallow construction.
+     */
+    private function __construct()
+    {
     }
 }
