@@ -16,8 +16,10 @@ final class EntityManagerFactory
     const DRIVER_YAML       = 'yaml';
 
     /**
-     * @param array $config
+     * @param array              $config
+     * @param ContainerInterface $container
      * @return EntityManager
+     * @throws \Doctrine\ORM\ORMException
      */
     public static function create(array $config = [], ContainerInterface $container = null)
     {
