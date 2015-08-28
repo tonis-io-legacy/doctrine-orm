@@ -25,6 +25,7 @@ final class EntityManagerFactory
     {
         $defaults = [
             'debug'      => true,
+            'cache'      => null,
             'proxy_dir'  => null,
             'driver'     => [
                 'type'   => self::DRIVER_ANNOTATION,
@@ -54,7 +55,7 @@ final class EntityManagerFactory
      */
     private static function createConfiguration(array $config, ContainerInterface $container = null)
     {
-        $cache = isset($config['cache']) ? $config['cache'] : null;
+        $cache = $config['cache'];
 
         if ($container && is_string($config['cache']) && $container->has($config['cache'])) {
             $cache = $container->get($config['cache']);
