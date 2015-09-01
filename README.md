@@ -15,33 +15,28 @@ composer require tonis-io/doctrine-orm
 ## Usage
 
 ```php
-$app = new Tonis\App;
-$app->package(new Tonis\DoctrineORM\Package($config));
+$entityManager = Tonis\DoctrineORM\EntityManagerFactory::create($config, $container)
 ```
+
+**Note:** Container is optional and is used to pull the cache from if the cache is present as a string.
 
 ## Configuration
 
-`Tonis\DoctrineORM\Package` accepts an array of of configuration. The following is an example
+The `create()` method accepts an array of of configuration. The following is an example
 with default values.
 
 ```php
-$package = new Tonis\DoctrineORM\Package([
-    'alias'     => EntityManager::class,
-    'debug'     => true,
-    'proxy_dir' => null,
-    
-    'driver' => [
+[
+    'debug'      => true,
+    'cache'      => null,
+    'proxy_dir'  => null,
+    'driver'     => [
         'type'   => self::DRIVER_ANNOTATION,
         'simple' => true,
         'paths'  => [],
     ],
-    
     'connection' => [
-        'driver'   => 'pdo_mysql',
-        'host'     => '127.0.0.1',
-        'port'     => '3306',
-        'user'     => '',
-        'password' => '',
+        'driver' => 'pdo_mysql'
     ],
-]);
+];
 ```
